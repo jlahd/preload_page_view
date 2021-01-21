@@ -253,7 +253,7 @@ class _PagePosition extends ScrollPositionWithSingleContext
   }
 
   @override
-  double get page => pixels == null
+  double get page => !hasPixels
       ? null
       : getPageFromPixels(
           pixels.clamp(minScrollExtent, maxScrollExtent), viewportDimension);
@@ -266,7 +266,7 @@ class _PagePosition extends ScrollPositionWithSingleContext
 
   @override
   void restoreScrollOffset() {
-    if (pixels == null) {
+    if (!hasPixels) {
       final double value = PageStorage.of(context.storageContext)
           ?.readState(context.storageContext);
       if (value != null) _pageToUseOnStartup = value;
@@ -275,9 +275,9 @@ class _PagePosition extends ScrollPositionWithSingleContext
 
   @override
   bool applyViewportDimension(double viewportDimension) {
-    final double oldViewportDimensions = this.viewportDimension;
+    final double oldViewportDimensions = this.hasViewportDimension ? this.viewportDimension : 0.0;
     final bool result = super.applyViewportDimension(viewportDimension);
-    final double oldPixels = pixels;
+    final double oldPixels = hasPixels ? pixels : null;
     final double page = (oldPixels == null || oldViewportDimensions == 0.0)
         ? _pageToUseOnStartup
         : getPageFromPixels(oldPixels, oldViewportDimensions);
